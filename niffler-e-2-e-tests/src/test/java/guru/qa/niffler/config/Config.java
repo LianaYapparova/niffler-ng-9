@@ -25,4 +25,8 @@ public interface Config {
   String currencyJdbcUrl();
 
   String ghUrl();
+
+  String authUrl();
+  String gatewayUrl();
+  String userdataUrl();
 }

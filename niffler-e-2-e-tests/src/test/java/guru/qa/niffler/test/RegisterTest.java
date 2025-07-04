@@ -1,19 +1,20 @@
 package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
-import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.User;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
+import static guru.qa.niffler.utils.RandomDataUtils.randomPassword;
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+
 public class RegisterTest {
     private static final Config CFG = Config.getInstance();
-    private static final Faker faker = new Faker();
 
     @Test
     void registerNewUserTest() {
-        User newUser = new User(faker.name().username(), faker.number().digits(5));
+        User newUser = new User(randomUsername(), randomPassword());
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
                 .setUserName(newUser.username())

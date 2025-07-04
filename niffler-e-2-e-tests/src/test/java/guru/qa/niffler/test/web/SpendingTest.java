@@ -2,36 +2,43 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @WebTest
 public class SpendingTest {
 
   private static final Config CFG = Config.getInstance();
 
-  @User(
-      username = "duck",
-      spendings = @Spending(
-          amount = 89990.00,
-          description = "Advanced 9 поток!",
-          category = "Обучение"
-      )
-  )
+    @User(
+            username = "duck",
+            spending = {@Spending(
+                    amount = 89990.00,
+                    description = "Advanced 9 поток!",
+                    category = "Обучение")},
+            categories = {
+                    @Category(
+                            name = "Обучение"
+                    )
+            }
+    )
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin(SpendJson spendJson) {
-    final String newDescription = ":)";
+      final String newDescription = ":)";
 
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
-        .checkThatPageLoaded()
-        .editSpending(spendJson.description())
-        .setNewSpendingDescription(newDescription)
-        .save()
-        .checkThatTableContainsSpending(newDescription);
+      Selenide.open(CFG.frontUrl(), LoginPage.class)
+              .fillLoginPage("duck", "12345")
+              .submit()
+              .checkThatPageLoaded()
+              .editSpending(spendJson.description())
+              .setNewSpendingDescription(newDescription)
+              .save()
+              .checkThatTableContainsSpending(newDescription);
   }
 }
