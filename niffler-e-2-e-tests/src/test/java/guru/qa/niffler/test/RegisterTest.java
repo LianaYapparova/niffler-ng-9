@@ -14,7 +14,8 @@ public class RegisterTest {
 
     @Test
     void registerNewUserTest() {
-        User newUser = new User(randomUsername(), randomPassword());
+        User newUser = new User(null, randomUsername(), randomPassword(), null, null,
+                null, null, null, null);
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
                 .setUserName(newUser.username())

@@ -130,7 +130,7 @@ public class Databases {
     );
   }
 
-  private static Connection connection(String jdbcUrl) throws SQLException {
+  public static Connection connection(String jdbcUrl) throws SQLException {
     return threadConnections.computeIfAbsent(
         Thread.currentThread().threadId(),
         key -> {
