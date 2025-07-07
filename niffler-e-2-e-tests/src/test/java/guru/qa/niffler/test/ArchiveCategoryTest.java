@@ -17,7 +17,7 @@ public class ArchiveCategoryTest {
             categories = {
                     @Category(
                             name = "",
-                            archived = true
+                            archived = false
                     )
             }
     )
