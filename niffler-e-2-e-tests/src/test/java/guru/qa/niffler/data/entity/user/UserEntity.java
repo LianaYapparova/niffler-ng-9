@@ -13,6 +13,7 @@ import java.util.UUID;
 public class UserEntity {
     private UUID id;
     private String username;
+    private String password;
     private CurrencyValues currency;
     private String firstname;
     private String surname;
@@ -22,6 +23,7 @@ public class UserEntity {
 
     public static UserEntity fromJson(User json) {
         UserEntity u = new UserEntity();
+        u.setPassword(json.password());
         u.setId(json.id());
         u.setUsername(json.username());
         u.setCurrency(json.currency());
