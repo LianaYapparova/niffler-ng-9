@@ -1,15 +1,18 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.User;
 import guru.qa.niffler.service.SpendDbClient;
-import org.junit.jupiter.api.Disabled;
+import guru.qa.niffler.service.UserDbClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-@Disabled
+import static guru.qa.niffler.model.CurrencyValues.RUB;
+import static guru.qa.niffler.utils.RandomDataUtils.*;
+
+
 public class JdbcTest {
 
   @Test
@@ -26,7 +29,7 @@ public class JdbcTest {
                 "duck",
                 false
             ),
-            CurrencyValues.RUB,
+            RUB,
             1000.0,
             "spend-name-tx",
             null
@@ -35,4 +38,16 @@ public class JdbcTest {
 
     System.out.println(spend);
   }
+
+    @Test
+    void createUserTest() {
+        UserDbClient userDbClient = new UserDbClient();
+
+        User user = userDbClient.createUser(
+        new User(null, randomUsername(), randomPassword(),  RUB, randomName(),
+                randomSurname(), null, null, null)
+        );
+
+        System.out.println(user);
+    }
 }
