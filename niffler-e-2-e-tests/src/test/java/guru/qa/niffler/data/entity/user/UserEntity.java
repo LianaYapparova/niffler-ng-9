@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.entity.user;
 
+import guru.qa.niffler.data.entity.Entity;
 import guru.qa.niffler.model.CurrencyValues;
 
 import guru.qa.niffler.model.User;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class UserEntity {
+public class UserEntity implements Entity {
     private UUID id;
     private String username;
     private String password;

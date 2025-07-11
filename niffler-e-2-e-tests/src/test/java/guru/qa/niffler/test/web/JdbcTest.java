@@ -47,7 +47,6 @@ public class JdbcTest {
         new User(null, randomUsername(), randomPassword(),  RUB, randomName(),
                 randomSurname(), null, null, null)
         );
-
         System.out.println(user);
     }
 }

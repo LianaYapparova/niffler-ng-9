@@ -2,6 +2,7 @@ package guru.qa.niffler.data;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
+import guru.qa.niffler.data.entity.Entity;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 import org.apache.commons.lang3.StringUtils;
@@ -112,7 +113,7 @@ public class Databases {
         }
     }
 
-    private static DataSource dataSource(String jdbcUrl, int transactionIsolationLevel) {
+    public static DataSource dataSource(String jdbcUrl) {
         return dataSources.computeIfAbsent(
                 jdbcUrl,
                 key -> {
@@ -126,7 +127,7 @@ public class Databases {
                     props.put("password", "secret");
                     dsBean.setXaProperties(props);
                     dsBean.setMaxPoolSize(10);
-                    dsBean.setDefaultIsolationLevel(transactionIsolationLevel);
+//                    dsBean.setDefaultIsolationLevel(transactionIsolationLevel);
                     return dsBean;
                 }
         );
@@ -139,7 +140,7 @@ public class Databases {
                     try {
                         return new HashMap<>(Map.of(
                                 jdbcUrl,
-                                dataSource(jdbcUrl, transactionIsolationLevel).getConnection()
+                                dataSource(jdbcUrl).getConnection()
                         ));
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -149,7 +150,7 @@ public class Databases {
                 jdbcUrl,
                 key -> {
                     try {
-                        return dataSource(jdbcUrl, transactionIsolationLevel).getConnection();
+                        return dataSource(jdbcUrl).getConnection();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

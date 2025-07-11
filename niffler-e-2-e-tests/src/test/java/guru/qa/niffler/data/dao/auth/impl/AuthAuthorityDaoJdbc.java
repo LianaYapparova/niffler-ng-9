@@ -36,4 +36,10 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public AuthorityEntity createAuthority(AuthorityEntity... authority) {
+        return null;
+    }
+
 }

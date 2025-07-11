@@ -1,13 +1,12 @@
 package guru.qa.niffler.data.dao.auth.impl;
 
 import guru.qa.niffler.data.dao.auth.AuthUserDao;
-import guru.qa.niffler.data.entity.auth.Authority;
-import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.entity.user.UserEntity;
+import guru.qa.niffler.data.entity.auth.UserAuthEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.*;
+import java.util.Optional;
 import java.util.UUID;
 
 public class AuthUserDaoJdbc implements AuthUserDao {
@@ -16,8 +15,14 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     public AuthUserDaoJdbc(Connection connection) {
         this.connection = connection;
     }
+
     @Override
-    public UserEntity createUser(UserEntity user) {
+    public Optional<UserAuthEntity> findById(UUID id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public UserAuthEntity createUser(UserAuthEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
                         "VALUES (?, ?, ?, ?, ?, ?)",
@@ -40,8 +45,6 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 }
             }
             user.setId(generatedKey);
-            new AuthAuthorityDaoJdbc(connection).createAuthority(AuthorityEntity.builder().user(user).authority(Authority.read).build());
-            new AuthAuthorityDaoJdbc(connection).createAuthority(AuthorityEntity.builder().user(user).authority(Authority.write).build());
             return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
