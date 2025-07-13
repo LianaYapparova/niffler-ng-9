@@ -116,4 +116,9 @@ public class SpendDaoJdbc implements SpendDao {
         throw new RuntimeException(e);
       }
     }
+
+    @Override
+    public List<SpendEntity> findAll() {
+        return null;
+    }
 }

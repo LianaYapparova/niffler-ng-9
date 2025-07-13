@@ -140,6 +140,11 @@ public class CategoryDaoJdbc implements CategoryDao {
         }
     }
 
+    @Override
+    public List<CategoryEntity> findAll() {
+        return null;
+    }
+
     private CategoryEntity createCategoryEntity(ResultSet rs) throws SQLException {
         CategoryEntity ce = new CategoryEntity();
         ce.setId(rs.getObject("id", UUID.class));
