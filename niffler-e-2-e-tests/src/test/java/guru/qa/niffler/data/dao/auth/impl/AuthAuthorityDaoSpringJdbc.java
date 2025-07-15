@@ -3,11 +3,14 @@ package guru.qa.niffler.data.dao.auth.impl;
 import guru.qa.niffler.data.dao.auth.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     private final DataSource dataSource;
@@ -40,5 +43,17 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
                 }
         );
         return null;
+    }
+
+    @Override
+    public List<AuthorityEntity> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        List<AuthorityEntity> authorityEntities = jdbcTemplate.query("SELECT * FROM authority",
+                new BeanPropertyRowMapper<>(AuthorityEntity.class));
+        if (authorityEntities.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return authorityEntities;
+        }
     }
 }

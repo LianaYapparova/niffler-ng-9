@@ -6,6 +6,7 @@ import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -98,6 +99,11 @@ public class UserdataUserDAOJdbc implements UserDAO {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return null;
     }
 
     private UserEntity createUserEntity(ResultSet rs) throws SQLException {
