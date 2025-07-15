@@ -10,9 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static guru.qa.niffler.data.Databases.dataSource;
 import static guru.qa.niffler.model.CurrencyValues.RUB;
-import static guru.qa.niffler.service.SpendDbClient.CFG;
 import static guru.qa.niffler.utils.RandomDataUtils.*;
 
 
@@ -28,14 +26,14 @@ public class JdbcTest {
             new Date(),
             new CategoryJson(
                 null,
-                "cat-name-tx-2",
+                randomCategoryName(),
                 "duck",
                 false
             ),
             RUB,
             1000.0,
             "spend-name-tx",
-            null
+                "duck"
         )
     );
 
@@ -60,8 +58,18 @@ public class JdbcTest {
     }
 
     @Test
+    void springJdbcTest() {
+        UserDbClient usersDbClient = new UserDbClient();
+        User user = usersDbClient.createUserSpringJdbc(
+                new User(null, randomUsername(), randomPassword(),  RUB, randomName(),
+                        randomSurname(), null, null, null)
+        );
+        System.out.println(user);
+    }
+
+    @Test
     void createSpendJdbcSpringTest() {
-        SpendDaoSpringJdbc spendDaoSpringJdbc = new SpendDaoSpringJdbc(dataSource(CFG.spendJdbcUrl()));
+        SpendDaoSpringJdbc spendDaoSpringJdbc = new SpendDaoSpringJdbc();
         SpendDbClient spendDbClient = new SpendDbClient();
 
         SpendJson spend = spendDbClient.createSpendJdBcSpring(

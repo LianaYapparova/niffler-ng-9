@@ -1,8 +1,10 @@
 package guru.qa.niffler.data.dao.user.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.user.UserDAO;
 import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
+import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -17,15 +19,11 @@ import java.util.UUID;
 
 public class UserdataUserDaoSpringJdbc implements UserDAO {
 
-    private final DataSource dataSource;
-
-    public UserdataUserDaoSpringJdbc(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private static final Config CFG = Config.getInstance();
 
     @Override
     public UserEntity createUser(UserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -50,7 +48,7 @@ public class UserdataUserDaoSpringJdbc implements UserDAO {
 
     @Override
     public Optional<UserEntity> findUserById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
@@ -72,7 +70,7 @@ public class UserdataUserDaoSpringJdbc implements UserDAO {
 
     @Override
     public List<UserEntity> findAll() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         List<UserEntity> userEntityList = jdbcTemplate.query("SELECT * FROM user",
                 UserdataUserEntityRowMapper.instance);
         if (userEntityList.isEmpty()) {

@@ -1,7 +1,9 @@
 package guru.qa.niffler.data.dao.spend.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.spend.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
+import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,15 +17,10 @@ import java.util.*;
 
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
-    private final DataSource dataSource;
-
-    public CategoryDaoSpringJdbc(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
+    private static final Config CFG = Config.getInstance();
     @Override
     public CategoryEntity create(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -43,7 +40,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         CategoryEntity categoryEntity = jdbcTemplate.queryForObject("SELECT * FROM category WHERE id = ?",
                 new BeanPropertyRowMapper<>(CategoryEntity.class), id);
         return Optional.ofNullable(categoryEntity);
@@ -52,7 +49,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         CategoryEntity categoryEntity = jdbcTemplate.queryForObject("SELECT * FROM category WHERE username = ? and name = ?",
                 categoryEntityRowMapper, username, categoryName);
         return Optional.ofNullable(categoryEntity);
@@ -60,7 +57,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         List<CategoryEntity> categoryEntities = jdbcTemplate.query("SELECT * FROM category WHERE username = ?",
                 new Object[]{username},
                 categoryEntityRowMapper);
@@ -73,13 +70,13 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public void deleteCategory(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         jdbcTemplate.update("delete from category where id = ?", category.getId());
     }
 
     @Override
     public CategoryEntity update(CategoryEntity categoryEntity) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         CategoryEntity categoryEntityUpdated = jdbcTemplate.queryForObject("UPDATE category " +
                         " SET name = ?, username = ?, archived = ? " +
                         " WHERE id = ?",
@@ -89,7 +86,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public List<CategoryEntity> findAll() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
         List<CategoryEntity> categoryEntities = jdbcTemplate.query("SELECT * FROM category ",
                 categoryEntityRowMapper);
         if (categoryEntities.isEmpty()) {

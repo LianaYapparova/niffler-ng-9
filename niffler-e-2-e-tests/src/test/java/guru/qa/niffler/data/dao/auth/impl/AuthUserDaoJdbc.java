@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.dao.auth.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.auth.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.UserAuthEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -10,13 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.tpl.Connections.holder;
+
 public class AuthUserDaoJdbc implements AuthUserDao {
-    private final Connection connection;
-
-    public AuthUserDaoJdbc(Connection connection) {
-        this.connection = connection;
-    }
-
+    private static final Config CFG = Config.getInstance();
     @Override
     public Optional<UserAuthEntity> findById(UUID id) {
         return Optional.empty();
@@ -24,7 +22,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     @Override
     public UserAuthEntity createUser(UserAuthEntity user) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
                         "VALUES (?, ?, ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
