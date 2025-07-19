@@ -2,7 +2,7 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.model.User;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ public class RegisterTest {
 
     @Test
     void registerNewUserTest() {
-        User newUser = new User(null, randomUsername(), randomPassword(), null, null,
+        UserJson newUser = new UserJson(null, randomUsername(), randomPassword(), null, null,
                 null, null, null, null);
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()

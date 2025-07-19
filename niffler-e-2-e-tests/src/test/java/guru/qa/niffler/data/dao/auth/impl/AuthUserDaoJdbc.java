@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.auth.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.auth.AuthUserDao;
-import guru.qa.niffler.data.entity.auth.UserAuthEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,12 +16,12 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 public class AuthUserDaoJdbc implements AuthUserDao {
     private static final Config CFG = Config.getInstance();
     @Override
-    public Optional<UserAuthEntity> findById(UUID id) {
+    public Optional<AuthUserEntity> findById(UUID id) {
         return Optional.empty();
     }
 
     @Override
-    public UserAuthEntity createUser(UserAuthEntity user) {
+    public AuthUserEntity createUser(AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
                         "VALUES (?, ?, ?, ?, ?, ?)",
@@ -51,7 +51,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public List<UserAuthEntity> findAll() {
+    public List<AuthUserEntity> findAll() {
         return null;
     }
 }

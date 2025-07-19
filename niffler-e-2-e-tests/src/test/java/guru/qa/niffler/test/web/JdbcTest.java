@@ -3,14 +3,14 @@ package guru.qa.niffler.test.web;
 import guru.qa.niffler.data.dao.spend.impl.SpendDaoSpringJdbc;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.User;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static guru.qa.niffler.model.CurrencyValues.RUB;
+import static guru.qa.niffler.data.entity.user.CurrencyValues.RUB;
 import static guru.qa.niffler.utils.RandomDataUtils.*;
 
 
@@ -44,14 +44,14 @@ public class JdbcTest {
     void createUserTest() {
         UserDbClient userDbClient = new UserDbClient();
 
-        User user = userDbClient.createUser(
-        new User(null, randomUsername(), randomPassword(),  RUB, randomName(),
+        UserJson user = userDbClient.createUser(
+        new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
                 randomSurname(), null, null, null)
         );
         System.out.println(user);
 
-        User user2 = userDbClient.createUserSpringJdbc(
-                new User(null, randomUsername(), randomPassword(),  RUB, randomName(),
+        UserJson user2 = userDbClient.createUserSpringJdbc(
+                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
                         randomSurname(), null, null, null)
         );
         System.out.println(user2);
@@ -60,8 +60,8 @@ public class JdbcTest {
     @Test
     void springJdbcTest() {
         UserDbClient usersDbClient = new UserDbClient();
-        User user = usersDbClient.createUserSpringJdbc(
-                new User(null, randomUsername(), randomPassword(),  RUB, randomName(),
+        UserJson user = usersDbClient.createUserSpringJdbc(
+                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
                         randomSurname(), null, null, null)
         );
         System.out.println(user);

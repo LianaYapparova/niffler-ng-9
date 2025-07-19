@@ -1,13 +1,13 @@
 package guru.qa.niffler.data.mapper;
 
-import guru.qa.niffler.data.entity.auth.UserAuthEntity;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class AuthUserEntityRowMapper implements RowMapper<UserAuthEntity> {
+public class AuthUserEntityRowMapper implements RowMapper<AuthUserEntity> {
 
     public static final AuthUserEntityRowMapper instance = new AuthUserEntityRowMapper();
 
@@ -15,16 +15,15 @@ public class AuthUserEntityRowMapper implements RowMapper<UserAuthEntity> {
     }
 
     @Override
-    public UserAuthEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-        UserAuthEntity result = UserAuthEntity.builder()
-                .id(rs.getObject("id", UUID.class))
-                .username(rs.getString("username"))
-                .password(rs.getString("password"))
-                .enabled(rs.getBoolean("enabled"))
-                .accountNonExpired(rs.getBoolean("account_non_expired"))
-                .accountNonLocked(rs.getBoolean("account_non_locked"))
-                .credentialsNonExpired(rs.getBoolean("credentials_non_expired"))
-                .build();
-        return result;
+    public AuthUserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+        AuthUserEntity authUserEntity = new  AuthUserEntity();
+        authUserEntity.setId(rs.getObject("id", UUID.class));
+        authUserEntity.setUsername(rs.getString("username"));
+        authUserEntity.setPassword(rs.getString("password"));
+        authUserEntity.setEnabled(rs.getBoolean("enabled"));
+        authUserEntity.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+        authUserEntity.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+        authUserEntity.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+        return authUserEntity;
     }
 }
