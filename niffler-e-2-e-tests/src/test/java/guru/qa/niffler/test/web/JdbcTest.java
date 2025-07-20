@@ -1,6 +1,10 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.data.dao.spend.impl.SpendDaoSpringJdbc;
+import guru.qa.niffler.data.entity.user.FriendshipEntity;
+import guru.qa.niffler.data.entity.user.FriendshipStatus;
+import guru.qa.niffler.data.entity.user.UserEntity;
+import guru.qa.niffler.data.repository.userdata.impl.UserDataRepositoryJdbc;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
@@ -9,6 +13,7 @@ import guru.qa.niffler.service.UserDbClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.List;
 
 import static guru.qa.niffler.data.entity.user.CurrencyValues.RUB;
 import static guru.qa.niffler.utils.RandomDataUtils.*;
@@ -46,15 +51,48 @@ public class JdbcTest {
 
         UserJson user = userDbClient.createUser(
         new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                randomSurname(), null, null, null)
+                randomSurname(), null, null, null, null, null)
         );
         System.out.println(user);
 
         UserJson user2 = userDbClient.createUserSpringJdbc(
                 new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                        randomSurname(), null, null, null)
+                        randomSurname(), null, null, null, null, null)
         );
         System.out.println(user2);
+    }
+
+    @Test
+    void createUserWithFriendshipTest() {
+        UserDbClient userDbClient = new UserDbClient();
+
+        UserJson user = userDbClient.createUser(
+                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+                        randomSurname(), null, null, null, null, null)
+        );
+        System.out.println(user);
+
+        UserJson user1 = userDbClient.createUser(
+                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+                        randomSurname(), null, null, null, null, null)
+        );
+        System.out.println(user1);
+
+        FriendshipEntity friendshipEntity = new FriendshipEntity();
+        friendshipEntity.setAddressee(UserEntity.fromJson(user));
+        friendshipEntity.setStatus(FriendshipStatus.PENDING);
+
+        FriendshipEntity friendshipEntity1 = new FriendshipEntity();
+        friendshipEntity1.setRequester(UserEntity.fromJson(user1));
+        friendshipEntity1.setStatus(FriendshipStatus.ACCEPTED);
+
+        UserJson user2 = userDbClient.createUserSpringJdbc(
+                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+                        randomSurname(), null, null, null, List.of(friendshipEntity1), List.of(friendshipEntity))
+        );
+        System.out.println(user2);
+        UserDataRepositoryJdbc  userDataRepositoryJdbc = new UserDataRepositoryJdbc();
+        userDataRepositoryJdbc.findById(user2.id()).get();
     }
 
     @Test
@@ -62,7 +100,7 @@ public class JdbcTest {
         UserDbClient usersDbClient = new UserDbClient();
         UserJson user = usersDbClient.createUserSpringJdbc(
                 new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                        randomSurname(), null, null, null)
+                        randomSurname(), null, null, null, null, null)
         );
         System.out.println(user);
     }

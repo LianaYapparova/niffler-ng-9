@@ -13,6 +13,8 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.data.repository.auth.AuthUserRepository;
 import guru.qa.niffler.data.repository.auth.impl.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.userdata.UserDataRepository;
+import guru.qa.niffler.data.repository.userdata.impl.UserDataRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
@@ -36,6 +38,8 @@ public class UserDbClient {
     private final AuthUserDaoSpringJdbc authUserDaoSpringJdbc = new AuthUserDaoSpringJdbc();
     private final UserdataUserDaoSpringJdbc userdataUserDaoSpringJdbc = new UserdataUserDaoSpringJdbc();
     private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
+
+    private final UserDataRepository userDataRepository = new UserDataRepositoryJdbc();
 
     private final TransactionTemplate txTemplate = new TransactionTemplate(
             new JdbcTransactionManager(
@@ -69,7 +73,7 @@ public class UserDbClient {
 
             authUserRepository.create(authUser);
             return UserJson.fromEntity(
-                    userdataUserDaoSpringJdbc.createUser(UserEntity.fromJson(user))
+                    userDataRepository.create(UserEntity.fromJson(user))
             );
         });
     }

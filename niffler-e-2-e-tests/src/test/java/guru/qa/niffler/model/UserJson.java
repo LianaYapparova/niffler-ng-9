@@ -2,8 +2,10 @@ package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.user.CurrencyValues;
+import guru.qa.niffler.data.entity.user.FriendshipEntity;
 import guru.qa.niffler.data.entity.user.UserEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public record UserJson(@JsonProperty("id")
@@ -20,13 +22,14 @@ public record UserJson(@JsonProperty("id")
 
                        byte[] photo,
                        byte[] photo_small,
-                       String full_name) {
+                       String full_name,
+                       List<FriendshipEntity> friendshipRequests,
+                       List<FriendshipEntity> friendshipAddressees) {
 
     public static UserJson fromEntity(UserEntity entity) {
 
         return new UserJson(
-                null,
-
+                entity.getId(),
                 entity.getUsername(),
                 null,
                 entity.getCurrency(),
@@ -34,7 +37,9 @@ public record UserJson(@JsonProperty("id")
                 entity.getSurname(),
                 entity.getPhoto(),
                 entity.getPhotoSmall(),
-                entity.getFullname()
+                entity.getFullname(),
+                entity.getFriendshipIncome(),
+                entity.getFriendshipOutcome()
         );
     }
 

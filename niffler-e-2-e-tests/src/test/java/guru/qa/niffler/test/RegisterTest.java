@@ -15,7 +15,7 @@ public class RegisterTest {
     @Test
     void registerNewUserTest() {
         UserJson newUser = new UserJson(null, randomUsername(), randomPassword(), null, null,
-                null, null, null, null);
+                null, null, null, null, null, null);
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
                 .setUserName(newUser.username())
