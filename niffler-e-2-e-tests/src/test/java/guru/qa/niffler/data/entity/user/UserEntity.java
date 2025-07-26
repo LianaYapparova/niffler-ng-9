@@ -43,10 +43,10 @@ public class UserEntity implements Serializable {
   private byte[] photoSmall;
 
   @OneToMany(mappedBy = "requester", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<FriendshipEntity> friendshipRequests = new ArrayList<>();
+  private List<FriendshipEntity> friendshipIncome = new ArrayList<>();
 
   @OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<FriendshipEntity> friendshipAddressees = new ArrayList<>();
+  private List<FriendshipEntity> friendshipOutcome = new ArrayList<>();
 
   public void addFriends(FriendshipStatus status, UserEntity... friends) {
     List<FriendshipEntity> friendsEntities = Stream.of(friends)
@@ -58,7 +58,7 @@ public class UserEntity implements Serializable {
           fe.setCreatedDate(new Date());
           return fe;
         }).toList();
-    this.friendshipRequests.addAll(friendsEntities);
+    this.friendshipIncome.addAll(friendsEntities);
   }
 
   public void addInvitations(UserEntity... invitations) {
@@ -71,12 +71,12 @@ public class UserEntity implements Serializable {
           fe.setCreatedDate(new Date());
           return fe;
         }).toList();
-    this.friendshipAddressees.addAll(invitationsEntities);
+    this.friendshipOutcome.addAll(invitationsEntities);
   }
 
   public void removeFriends(UserEntity... friends) {
     List<UUID> idsToBeRemoved = Arrays.stream(friends).map(UserEntity::getId).toList();
-    for (Iterator<FriendshipEntity> i = getFriendshipRequests().iterator(); i.hasNext(); ) {
+    for (Iterator<FriendshipEntity> i = getFriendshipIncome().iterator(); i.hasNext(); ) {
       FriendshipEntity friendsEntity = i.next();
       if (idsToBeRemoved.contains(friendsEntity.getAddressee().getId())) {
         friendsEntity.setAddressee(null);
@@ -87,7 +87,7 @@ public class UserEntity implements Serializable {
 
   public void removeInvites(UserEntity... invitations) {
     List<UUID> idsToBeRemoved = Arrays.stream(invitations).map(UserEntity::getId).toList();
-    for (Iterator<FriendshipEntity> i = getFriendshipAddressees().iterator(); i.hasNext(); ) {
+    for (Iterator<FriendshipEntity> i = getFriendshipOutcome().iterator(); i.hasNext(); ) {
       FriendshipEntity friendsEntity = i.next();
       if (idsToBeRemoved.contains(friendsEntity.getRequester().getId())) {
         friendsEntity.setRequester(null);
@@ -122,6 +122,8 @@ public class UserEntity implements Serializable {
     u.setPhoto(json.photo());
     u.setPhotoSmall(json.photo_small());
     u.setFullname(json.full_name());
+    u.setFriendshipOutcome(json.friendshipAddressees());
+    u.setFriendshipIncome(json.friendshipRequests());
     return u;
   }
 }
