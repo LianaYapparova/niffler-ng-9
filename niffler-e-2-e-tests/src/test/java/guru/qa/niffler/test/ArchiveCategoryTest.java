@@ -8,12 +8,16 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
+
+import static guru.qa.niffler.jupiter.extension.UserExtension.DEFAULT_PASSWORD;
+
 public class ArchiveCategoryTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
     @User(
-            username = "duck",
+            username = "duck5",
             categories = {
                     @Category(
                             name = "",
@@ -21,15 +25,15 @@ public class ArchiveCategoryTest {
                     )
             }
     )
-    void activeCategoryInCategoryListTest(CategoryJson categoryJson) {
+    void activeCategoryInCategoryListTest(@Nonnull CategoryJson[] categoryJson) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .fillLoginPage("duck", "12345")
+                .fillLoginPage("duck5", DEFAULT_PASSWORD)
                 .submit()
                 .checkThatPageLoaded()
                 .clickMenuButton()
                 .clickProfileLink()
                 .clickShowArchivedSwitch()
-                .clickUnarchivedButton(categoryJson.name())
+                .clickUnarchivedButton(categoryJson[0].name())
                 .clickArchiveButton();
     }
 }

@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
@@ -24,7 +23,7 @@ public class CategoryExtension implements
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
-    private final SpendApiClient spendApiClient = new SpendApiClient();
+    private final CategoryDbClient categoryDbClient = new CategoryDbClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -42,27 +41,18 @@ public class CategoryExtension implements
                                     categoryAnno.archived()
                             );
 
-                            CategoryJson created = spendApiClient.addCategory(category);
-                            if (categoryAnno.archived()) {
-                                CategoryJson archivedCategory = new CategoryJson(
-                                        created.id(),
-                                        created.name(),
-                                        created.username(),
-                                        true
-                                );
-                                created = spendApiClient.updateCategory(archivedCategory);
-                            }
+                            CategoryJson created = categoryDbClient.createCategory(category);
                             result.add(created);
                         }
 
                         if (createdUser != null) {
                             createdUser.testData().categories().addAll(result);
-                        } else {
-                            context.getStore(NAMESPACE).put(
+                        }
+                        context.getStore(NAMESPACE).put(
                                     context.getUniqueId(),
                                     result.stream().toArray(CategoryJson[]::new)
                             );
-                        }
+
                     }
                 });
     }
@@ -79,7 +69,7 @@ public class CategoryExtension implements
                             category.username(),
                             true
                     );
-                    spendApiClient.updateCategory(category);
+                    categoryDbClient.updateCategory(category);
                 }
             }
         }

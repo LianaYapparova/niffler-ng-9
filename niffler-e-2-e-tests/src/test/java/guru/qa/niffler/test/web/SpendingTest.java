@@ -12,6 +12,8 @@ import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import javax.annotation.Nonnull;
+
 @ExtendWith(BrowserExtension.class)
 public class SpendingTest {
     private static final Config CFG = Config.getInstance();
@@ -23,7 +25,7 @@ public class SpendingTest {
             )
     )
     @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
+    void mainPageShouldBeDisplayedAfterSuccessLogin(@Nonnull UserJson user) {
         final SpendJson spend = user.testData().spendings().getFirst();
         final String newDescription = ":)";
 
