@@ -83,6 +83,26 @@ public class SpendDaoSpringJdbc implements SpendDao {
         }
     }
 
+    @Override
+    public SpendEntity update(SpendEntity spend) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
+        jdbcTemplate.update("""
+              UPDATE "spend"
+                SET spend_date  = ?,
+                    currency    = ?,
+                    amount      = ?,
+                    description = ?
+                WHERE id = ?
+            """,
+                new java.sql.Date(spend.getSpendDate().getTime()),
+                spend.getCurrency().name(),
+                spend.getAmount(),
+                spend.getDescription(),
+                spend.getId()
+        );
+        return spend;
+    }
+
     private final RowMapper<SpendEntity> spendEntityRowMapper = (resultSet, rowNum) -> {
         SpendEntity spendEntity = new SpendEntity();
         spendEntity.setId(resultSet.getObject("id", UUID.class));

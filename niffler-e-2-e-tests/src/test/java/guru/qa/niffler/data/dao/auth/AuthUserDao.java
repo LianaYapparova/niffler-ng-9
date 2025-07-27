@@ -12,4 +12,6 @@ public interface AuthUserDao {
     AuthUserEntity createUser(AuthUserEntity user);
 
     List<AuthUserEntity> findAll();
+
+    Optional<AuthUserEntity> findByUsername(String username);
 }

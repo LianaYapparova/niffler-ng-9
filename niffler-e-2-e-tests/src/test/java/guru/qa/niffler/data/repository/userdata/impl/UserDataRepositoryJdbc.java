@@ -117,7 +117,7 @@ public class UserDataRepositoryJdbc implements UserDataRepository {
     }
 
     @Override
-    public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
+    public void addFriendshipRequest(UserEntity requester, UserEntity addressee) {
         try (PreparedStatement friendshipPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                      "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) VALUES (?, ?, ?, ?)")) {
             friendshipPs.setObject(1, requester.getId());
@@ -130,13 +130,10 @@ public class UserDataRepositoryJdbc implements UserDataRepository {
         }
     }
 
-    @Override
-    public void addOutcomeInvitation(UserEntity requester, UserEntity addressee) {
 
-    }
 
     @Override
-    public void addOutcomeFriend(UserEntity requester, UserEntity addressee) {
+    public void addFriend(UserEntity requester, UserEntity addressee) {
         try (PreparedStatement friendshipPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) VALUES (?, ?, ?, ?)")) {
             friendshipPs.setObject(1, requester.getId());
@@ -147,5 +144,10 @@ public class UserDataRepositoryJdbc implements UserDataRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return Optional.empty();
     }
 }

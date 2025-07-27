@@ -2,7 +2,9 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,15 +17,18 @@ public class FriendsTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    @ExtendWith({UsersQueueExtension.class})
-    void friendShouldBePresentInFriendsTableTest(@UserType(value = WITH_FRIEND) StaticUser user1,
-                                             @UserType(value = WITH_FRIEND) StaticUser user2) {
+    @User(
+            friends = 1
+    )
+    void friendShouldBePresentInFriendsTableTest(UserJson user) {
+        final UserJson friend = user.testData().friends().getFirst();
+
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .fillLoginPage(user1.username(), user1.password())
+                .fillLoginPage(user.username(), user.testData().password())
                 .submit()
                 .clickMenuButton()
                 .clickFriendsLink()
-                .friendShouldBeVisible(user2);
+                .friendShouldBeVisible(friend);
     }
 
     @Test
@@ -38,14 +43,17 @@ public class FriendsTest {
     }
 
     @Test
-    @ExtendWith({UsersQueueExtension.class})
-    void incomingRequestShouldBePresentTest(@UserType(value = WITH_INCOME_REQUEST) StaticUser userIncome,
-                                            @UserType(value = WITH_OUTCOME_REQUEST) StaticUser userOutCome) {
+    @User(
+            incomeInvitations = 1
+    )
+    void incomingRequestShouldBePresentTest(UserJson user) {
+        final UserJson income = user.testData().incomeInvitations().getFirst();
+
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .fillLoginPage(userIncome.username(), userIncome.password())
+                .fillLoginPage(user.username(), user.testData().password())
                 .submit()
                 .clickMenuButton()
                 .clickFriendsLink()
-                .checkIncomingRequest(userOutCome);
+                .checkIncomingRequest(income);
     }
 }

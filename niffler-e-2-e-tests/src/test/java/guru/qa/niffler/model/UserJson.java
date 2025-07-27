@@ -1,5 +1,6 @@
 package guru.qa.niffler.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.user.CurrencyValues;
 import guru.qa.niffler.data.entity.user.FriendshipEntity;
@@ -21,10 +22,12 @@ public record UserJson(@JsonProperty("id")
                        String surname,
 
                        byte[] photo,
-                       byte[] photo_small,
-                       String full_name,
+                       byte[] photoSmall,
+                       String fullName,
                        List<FriendshipEntity> friendshipRequests,
-                       List<FriendshipEntity> friendshipAddressees) {
+                       List<FriendshipEntity> friendshipAddressees,
+                       @JsonIgnore
+                       TestData testData) {
 
     public static UserJson fromEntity(UserEntity entity) {
 
@@ -39,8 +42,25 @@ public record UserJson(@JsonProperty("id")
                 entity.getPhotoSmall(),
                 entity.getFullname(),
                 entity.getFriendshipIncome(),
-                entity.getFriendshipOutcome()
+                entity.getFriendshipOutcome(),
+                null
         );
     }
 
+    public UserJson addTestData(TestData testData) {
+        return new UserJson(
+                id,
+                username,
+                null,
+                currency,
+                firstname,
+                surname,
+                photo,
+                photoSmall,
+                fullName,
+                friendshipRequests,
+                friendshipAddressees,
+                testData
+        );
+    }
 }

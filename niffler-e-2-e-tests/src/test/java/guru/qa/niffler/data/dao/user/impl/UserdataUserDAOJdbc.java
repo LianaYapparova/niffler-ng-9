@@ -3,9 +3,11 @@ package guru.qa.niffler.data.dao.user.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.user.UserDAO;
 import guru.qa.niffler.data.entity.user.CurrencyValues;
+import guru.qa.niffler.data.entity.user.FriendshipEntity;
 import guru.qa.niffler.data.entity.user.UserEntity;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -100,7 +102,28 @@ public class UserdataUserDAOJdbc implements UserDAO {
 
     @Override
     public List<UserEntity> findAll() {
-        return null;
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM user")) {
+            ps.execute();
+            List<UserEntity> result = new ArrayList<>();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    UserEntity ue = new UserEntity();
+                    ue.setId(rs.getObject("id", UUID.class));
+                    ue.setUsername(rs.getString("username"));
+                    ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    ue.setFirstname(rs.getString("firstname"));
+                    ue.setSurname(rs.getString("surname"));
+                    ue.setFullname(rs.getString("full_name"));
+                    ue.setPhoto(rs.getBytes("photo"));
+                    ue.setPhotoSmall(rs.getBytes("photo_small"));
+                    result.add(ue);
+                }
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private UserEntity createUserEntity(ResultSet rs) throws SQLException {
@@ -113,6 +136,50 @@ public class UserdataUserDAOJdbc implements UserDAO {
         user.setFullname(rs.getString("fullname"));
         user.setPhoto(rs.getBytes("photo"));
         user.setPhotoSmall(rs.getBytes("photoSmall"));
+        return user;
+    }
+
+    @Override
+    public UserEntity update(UserEntity user) {
+        try (PreparedStatement usersPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                """
+                      UPDATE "user"
+                        SET currency    = ?,
+                            firstname   = ?,
+                            surname     = ?,
+                            photo       = ?,
+                            photo_small = ?
+                        WHERE id = ?
+                    """);
+
+             PreparedStatement friendsPs = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                     """
+                         INSERT INTO friendship (requester_id, addressee_id, status)
+                         VALUES (?, ?, ?)
+                         ON CONFLICT (requester_id, addressee_id)
+                             DO UPDATE SET status = ?
+                         """)
+        ) {
+            usersPs.setString(1, user.getCurrency().name());
+            usersPs.setString(2, user.getFirstname());
+            usersPs.setString(3, user.getSurname());
+            usersPs.setBytes(4, user.getPhoto());
+            usersPs.setBytes(5, user.getPhotoSmall());
+            usersPs.setObject(6, user.getId());
+            usersPs.executeUpdate();
+
+            for (FriendshipEntity fe : user.getFriendshipIncome()) {
+                friendsPs.setObject(1, user.getId());
+                friendsPs.setObject(2, fe.getAddressee().getId());
+                friendsPs.setString(3, fe.getStatus().name());
+                friendsPs.setString(4, fe.getStatus().name());
+                friendsPs.addBatch();
+                friendsPs.clearParameters();
+            }
+            friendsPs.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return user;
     }
 }

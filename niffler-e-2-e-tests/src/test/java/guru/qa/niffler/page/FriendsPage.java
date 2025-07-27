@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
+import guru.qa.niffler.model.UserJson;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.*;
@@ -17,7 +18,7 @@ public class FriendsPage implements Checked<FriendsPage> {
         return this;
     }
 
-    public FriendsPage friendShouldBeVisible(UsersQueueExtension.StaticUser friend) {
+    public FriendsPage friendShouldBeVisible(UserJson friend) {
         friendsTable.findAll("td").findBy(Condition.innerText(friend.username())).shouldBe(visible);
         return this;
     }
@@ -27,7 +28,7 @@ public class FriendsPage implements Checked<FriendsPage> {
         return this;
     }
 
-    public FriendsPage checkIncomingRequest(UsersQueueExtension.StaticUser user) {
+    public FriendsPage checkIncomingRequest(UserJson user) {
         friendsRequestTable.findAll("td").findBy(Condition.innerText(user.username())).shouldBe(visible);
         return this;
     }

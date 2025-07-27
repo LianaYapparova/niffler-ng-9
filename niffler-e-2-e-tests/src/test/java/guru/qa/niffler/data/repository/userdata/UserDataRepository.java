@@ -10,7 +10,9 @@ public interface UserDataRepository {
     UserEntity create(UserEntity userEntity);
 
     Optional<UserEntity>  findById(UUID id);
-    void addIncomeInvitation(UserEntity requester, UserEntity addressee);
-    void addOutcomeInvitation(UserEntity requester, UserEntity addressee);
-    void addOutcomeFriend(UserEntity requester, UserEntity addressee);
+    void addFriendshipRequest(UserEntity requester, UserEntity addressee);
+
+    void addFriend(UserEntity requester, UserEntity addressee);
+
+    Optional<UserEntity> findByUsername(String username);
 }

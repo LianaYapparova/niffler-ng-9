@@ -5,6 +5,7 @@ import guru.qa.niffler.data.entity.user.FriendshipEntity;
 import guru.qa.niffler.data.entity.user.FriendshipStatus;
 import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.data.repository.userdata.impl.UserDataRepositoryJdbc;
+import guru.qa.niffler.data.repository.userdata.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
@@ -51,13 +52,13 @@ public class JdbcTest {
 
         UserJson user = userDbClient.createUser(
         new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                randomSurname(), null, null, null, null, null)
+                randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user);
 
         UserJson user2 = userDbClient.createUserSpringJdbc(
                 new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                        randomSurname(), null, null, null, null, null)
+                        randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user2);
     }
@@ -68,31 +69,35 @@ public class JdbcTest {
 
         UserJson user = userDbClient.createUser(
                 new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                        randomSurname(), null, null, null, null, null)
+                        randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user);
+//
+//        UserJson user1 = userDbClient.createUser(
+//                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+//                        randomSurname(), null, null, null, null, null)
+//        );
+//        System.out.println(user1);
+//
+//        FriendshipEntity friendshipEntity = new FriendshipEntity();
+//        friendshipEntity.setAddressee(UserEntity.fromJson(user));
+//        friendshipEntity.setStatus(FriendshipStatus.PENDING);
+//
+//        FriendshipEntity friendshipEntity1 = new FriendshipEntity();
+//        friendshipEntity1.setRequester(UserEntity.fromJson(user1));
+//        friendshipEntity1.setStatus(FriendshipStatus.ACCEPTED);
 
-        UserJson user1 = userDbClient.createUser(
+        UserJson user2 = userDbClient.createUserHibernate(
                 new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                        randomSurname(), null, null, null, null, null)
-        );
-        System.out.println(user1);
-
-        FriendshipEntity friendshipEntity = new FriendshipEntity();
-        friendshipEntity.setAddressee(UserEntity.fromJson(user));
-        friendshipEntity.setStatus(FriendshipStatus.PENDING);
-
-        FriendshipEntity friendshipEntity1 = new FriendshipEntity();
-        friendshipEntity1.setRequester(UserEntity.fromJson(user1));
-        friendshipEntity1.setStatus(FriendshipStatus.ACCEPTED);
-
-        UserJson user2 = userDbClient.createUserSpringJdbc(
-                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                        randomSurname(), null, null, null, List.of(friendshipEntity1), List.of(friendshipEntity))
+                        randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user2);
-        UserDataRepositoryJdbc  userDataRepositoryJdbc = new UserDataRepositoryJdbc();
+        UserdataUserRepositoryHibernate userDataRepositoryJdbc = new UserdataUserRepositoryHibernate();
         userDataRepositoryJdbc.findById(user2.id()).get();
+
+        userDbClient.addIncomeInvitation(user2, 1);
+        userDbClient.addOutcomeInvitation(user2, 1);
+        userDbClient.addFriend(user, 1);
     }
 
     @Test
@@ -100,7 +105,7 @@ public class JdbcTest {
         UserDbClient usersDbClient = new UserDbClient();
         UserJson user = usersDbClient.createUserSpringJdbc(
                 new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                        randomSurname(), null, null, null, null, null)
+                        randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user);
     }

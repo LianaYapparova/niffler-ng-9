@@ -5,11 +5,13 @@ import guru.qa.niffler.data.dao.user.UserDAO;
 import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
@@ -77,5 +79,47 @@ public class UserdataUserDaoSpringJdbc implements UserDAO {
         } else {
             return userEntityList;
         }
+    }
+
+    @Override
+    public UserEntity update(UserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
+        jdbcTemplate.update("""
+                          UPDATE "user"
+                            SET currency    = ?,
+                                firstname   = ?,
+                                surname     = ?,
+                                photo       = ?,
+                                photo_small = ?
+                            WHERE id = ?
+            """,
+                user.getCurrency().name(),
+                user.getFirstname(),
+                user.getSurname(),
+                user.getPhoto(),
+                user.getPhotoSmall(),
+                user.getId());
+
+        jdbcTemplate.batchUpdate("""
+                             INSERT INTO friendship (requester_id, addressee_id, status)
+                             VALUES (?, ?, ?)
+                             ON CONFLICT (requester_id, addressee_id)
+                                 DO UPDATE SET status = ?
+            """,
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setObject(1, user.getId());
+                        ps.setObject(2, user.getFriendshipIncome().get(i).getAddressee().getId());
+                        ps.setString(3, user.getFriendshipIncome().get(i).getStatus().name());
+                        ps.setString(4, user.getFriendshipIncome().get(i).getStatus().name());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return user.getFriendshipIncome().size();
+                    }
+                });
+        return user;
     }
 }
