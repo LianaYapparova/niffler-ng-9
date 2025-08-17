@@ -7,6 +7,9 @@ import retrofit2.http.Body;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public interface SpendApi {
 
   @POST("internal/spends/add")

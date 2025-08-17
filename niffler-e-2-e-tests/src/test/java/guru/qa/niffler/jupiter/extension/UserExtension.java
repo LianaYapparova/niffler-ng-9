@@ -5,7 +5,8 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 
-import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.service.UsersClient;
+import guru.qa.niffler.service.impl.UserDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -13,7 +14,10 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import static guru.qa.niffler.data.entity.user.CurrencyValues.RUB;
 import static guru.qa.niffler.jupiter.extension.TestMethodContextExtension.context;
+import static guru.qa.niffler.utils.RandomDataUtils.*;
+import static guru.qa.niffler.utils.RandomDataUtils.randomSurname;
 
 public class UserExtension implements
     BeforeEachCallback,
@@ -22,15 +26,14 @@ public class UserExtension implements
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
   public static final String DEFAULT_PASSWORD = "12345";
 
-  private final UserDbClient usersClient = new UserDbClient();
-
+  private final UsersClient usersClient = UsersClient.getInstance();
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(userAnno -> {
           if ("".equals(userAnno.username())) {
-            final String username = RandomDataUtils.randomUsername();
-            UserJson created = usersClient.createUser(username, DEFAULT_PASSWORD);
+            UserJson created = usersClient.createUser(   new UserJson(null, randomUsername(), DEFAULT_PASSWORD, RUB, randomName(),
+                    randomSurname(), null, null, null, null, null, null));
             final List<UserJson> incomes = usersClient.addIncomeInvitation(created, userAnno.incomeInvitations());
             final List<UserJson> outcomes = usersClient.addOutcomeInvitation(created, userAnno.outcomeInvitations());
             final List<UserJson> friends = usersClient.addFriend(created, userAnno.friends());

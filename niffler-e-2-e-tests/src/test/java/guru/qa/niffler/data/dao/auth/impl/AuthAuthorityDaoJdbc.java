@@ -5,6 +5,8 @@ import guru.qa.niffler.data.dao.auth.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,12 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
+
     private static final Config CFG = Config.getInstance();
+
+    @Nonnull
     @Override
     public AuthorityEntity createAuthority(AuthorityEntity authorityEntity) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -39,6 +45,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAllByUserId(UUID userId) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -57,11 +64,13 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
         }
     }
 
+    @Nonnull
     @Override
     public AuthorityEntity createAuthority(AuthorityEntity... authority) {
         return null;
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAll() {
         return null;

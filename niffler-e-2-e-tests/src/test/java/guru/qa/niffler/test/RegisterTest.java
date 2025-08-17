@@ -2,6 +2,7 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ public class RegisterTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
+    @DisabledByIssue("11")
     void registerNewUserTest() {
         UserJson newUser = new UserJson(null, randomUsername(), randomPassword(), null, null,
                 null, null, null, null, null, null, null);

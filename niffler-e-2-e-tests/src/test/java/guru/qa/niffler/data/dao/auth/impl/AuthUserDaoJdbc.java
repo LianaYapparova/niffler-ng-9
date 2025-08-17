@@ -7,12 +7,16 @@ import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
+
+@ParametersAreNonnullByDefault
 
 public class AuthUserDaoJdbc implements AuthUserDao {
     private static final Config CFG = Config.getInstance();
@@ -22,6 +26,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         return Optional.empty();
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity createUser(AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -52,11 +57,13 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthUserEntity> findAll() {
         return null;
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement("SELECT * FROM \"user\" WHERE username = ?")) {

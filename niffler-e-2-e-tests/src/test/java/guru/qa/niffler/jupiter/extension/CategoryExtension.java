@@ -1,11 +1,10 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.CategoryDbClient;
+import guru.qa.niffler.service.impl.CategoryDbClient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -24,7 +23,7 @@ public class CategoryExtension implements
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
-    private final SpendApiClient spendApiClient = new SpendApiClient();
+    private final CategoryDbClient categoryDbClient = new CategoryDbClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -42,7 +41,7 @@ public class CategoryExtension implements
                                     categoryAnno.archived()
                             );
 
-                            CategoryJson created = spendApiClient.addCategory(category);
+                            CategoryJson created = categoryDbClient.createCategory(category);
                             if (categoryAnno.archived()) {
                                 CategoryJson archivedCategory = new CategoryJson(
                                         created.id(),
@@ -50,7 +49,7 @@ public class CategoryExtension implements
                                         created.username(),
                                         true
                                 );
-                                created = spendApiClient.updateCategory(archivedCategory);
+                                created = categoryDbClient.updateCategory(archivedCategory);
                             }
                             result.add(created);
                         }
@@ -79,7 +78,7 @@ public class CategoryExtension implements
                             category.username(),
                             true
                     );
-                    spendApiClient.updateCategory(category);
+                    categoryDbClient.updateCategory(category);
                 }
             }
         }

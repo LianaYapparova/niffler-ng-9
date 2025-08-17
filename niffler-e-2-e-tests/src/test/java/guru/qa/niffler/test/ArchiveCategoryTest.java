@@ -13,7 +13,6 @@ public class ArchiveCategoryTest {
 
     @Test
     @User(
-            username = "duck",
             categories = {
                     @Category(
                             name = "",
@@ -21,15 +20,15 @@ public class ArchiveCategoryTest {
                     )
             }
     )
-    void activeCategoryInCategoryListTest(CategoryJson categoryJson) {
+    void activeCategoryInCategoryListTest(CategoryJson[]  categoryJsons) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .fillLoginPage("duck", "12345")
+                .fillLoginPage(categoryJsons[0].username(), "12345")
                 .submit()
                 .checkThatPageLoaded()
                 .clickMenuButton()
                 .clickProfileLink()
                 .clickShowArchivedSwitch()
-                .clickUnarchivedButton(categoryJson.name())
+                .clickUnarchivedButton(categoryJsons[0].name())
                 .clickArchiveButton();
     }
 }

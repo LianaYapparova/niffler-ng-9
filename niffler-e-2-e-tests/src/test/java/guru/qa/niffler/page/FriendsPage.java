@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
-public class FriendsPage implements Checked<FriendsPage> {
+public class FriendsPage extends BasePage<FriendsPage> implements Checked<FriendsPage> {
     private final SelenideElement friendsTable = $(By.id("friends"));
     private final SelenideElement friendsRequestTable = $(By.id("requests"));
     @Override

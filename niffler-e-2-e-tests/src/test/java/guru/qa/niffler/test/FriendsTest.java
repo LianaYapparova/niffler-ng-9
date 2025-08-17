@@ -32,10 +32,10 @@ public class FriendsTest {
     }
 
     @Test
-    @ExtendWith({UsersQueueExtension.class})
-    void friendShouldBeEmptyInFriendsTableTest(@UserType(value = EMPTY) StaticUser user) {
+    @User()
+    void friendShouldBeEmptyInFriendsTableTest(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .fillLoginPage(user.username(), user.password())
+                .fillLoginPage(user.username(), user.testData().password())
                 .submit()
                 .clickMenuButton()
                 .clickFriendsLink()

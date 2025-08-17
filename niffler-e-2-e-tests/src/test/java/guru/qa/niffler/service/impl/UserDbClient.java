@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.auth.impl.AuthAuthorityDaoJdbc;
@@ -17,10 +17,9 @@ import guru.qa.niffler.data.repository.auth.impl.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.userdata.UserDataRepository;
 import guru.qa.niffler.data.repository.userdata.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.DataSources;
-import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
-import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UsersClient;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +31,7 @@ import java.util.List;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
-public class UserDbClient {
+public class UserDbClient implements UsersClient {
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -71,6 +70,7 @@ public class UserDbClient {
             authUser.setAuthorities(Arrays.stream(Authority.values()).map(
                     e -> {
                         AuthorityEntity ae = new AuthorityEntity();
+                        ae.setUser(authUser);
                         ae.setAuthority(e);
                         return ae;
                     }

@@ -2,9 +2,12 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Selenide.$;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class EditSpendingPage {
+import static com.codeborne.selenide.Selenide.$;
+@ParametersAreNonnullByDefault
+public class EditSpendingPage extends BasePage<EditSpendingPage>{
+
   private final SelenideElement amountInput = $("#amount");
   private final SelenideElement descriptionInput = $("#description");
   private final SelenideElement submitButton = $("#save");

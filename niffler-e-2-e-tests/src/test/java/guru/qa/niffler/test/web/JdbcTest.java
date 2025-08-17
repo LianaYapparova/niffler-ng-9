@@ -1,63 +1,65 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.data.dao.spend.impl.SpendDaoSpringJdbc;
-import guru.qa.niffler.data.entity.user.FriendshipEntity;
-import guru.qa.niffler.data.entity.user.FriendshipStatus;
-import guru.qa.niffler.data.entity.user.UserEntity;
-import guru.qa.niffler.data.repository.userdata.impl.UserDataRepositoryJdbc;
 import guru.qa.niffler.data.repository.userdata.impl.UserdataUserRepositoryHibernate;
+import guru.qa.niffler.jupiter.extension.ClientResolver;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.SpendDbClient;
-import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.service.SpendClient;
+import guru.qa.niffler.service.UsersClient;
+import guru.qa.niffler.service.impl.SpendDbClient;
+import guru.qa.niffler.service.impl.UserDbClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Date;
-import java.util.List;
 
 import static guru.qa.niffler.data.entity.user.CurrencyValues.RUB;
 import static guru.qa.niffler.utils.RandomDataUtils.*;
 
-
+@ExtendWith(ClientResolver.class)
 public class JdbcTest {
 
-  @Test
-  void txTest() {
-    SpendDbClient spendDbClient = new SpendDbClient();
+    private SpendClient spendClient;
+    private UsersClient usersClient;
 
-    SpendJson spend = spendDbClient.createSpend(
-        new SpendJson(
-            null,
-            new Date(),
-            new CategoryJson(
-                null,
-                randomCategoryName(),
-                "duck",
-                false
-            ),
-            RUB,
-            1000.0,
-            "spend-name-tx",
-                "duck"
-        )
-    );
+    @Test
+    void txTest() {
 
-    System.out.println(spend);
-  }
+        String userName = randomUsername();
+
+        SpendJson spend = spendClient.createSpend(
+                new SpendJson(
+                        null,
+                        new Date(),
+                        new CategoryJson(
+                                null,
+                                randomCategoryName(),
+                                userName,
+                                false
+                        ),
+                        RUB,
+                        1000.0,
+                        "spend-name-tx",
+                        userName
+                )
+        );
+
+        System.out.println(spend);
+    }
 
     @Test
     void createUserTest() {
-        UserDbClient userDbClient = new UserDbClient();
 
-        UserJson user = userDbClient.createUser(
-        new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-                randomSurname(), null, null, null, null, null, null)
+        UserJson user = usersClient.createUser(
+                new UserJson(null, randomUsername(), randomPassword(), RUB, randomName(),
+                        randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user);
 
-        UserJson user2 = userDbClient.createUserSpringJdbc(
-                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+        UserJson user2 = usersClient.createUserSpringJdbc(
+                new UserJson(null, randomUsername(), randomPassword(), RUB, randomName(),
                         randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user2);
@@ -65,10 +67,9 @@ public class JdbcTest {
 
     @Test
     void createUserWithFriendshipTest() {
-        UserDbClient userDbClient = new UserDbClient();
 
-        UserJson user = userDbClient.createUser(
-                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+        UserJson user = usersClient.createUser(
+                new UserJson(null, randomUsername(), randomPassword(), RUB, randomName(),
                         randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user);
@@ -87,24 +88,24 @@ public class JdbcTest {
 //        friendshipEntity1.setRequester(UserEntity.fromJson(user1));
 //        friendshipEntity1.setStatus(FriendshipStatus.ACCEPTED);
 
-        UserJson user2 = userDbClient.createUserHibernate(
-                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+        UserJson user2 = usersClient.createUserHibernate(
+                new UserJson(null, randomUsername(), randomPassword(), RUB, randomName(),
                         randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user2);
         UserdataUserRepositoryHibernate userDataRepositoryJdbc = new UserdataUserRepositoryHibernate();
         userDataRepositoryJdbc.findById(user2.id()).get();
 
-        userDbClient.addIncomeInvitation(user2, 1);
-        userDbClient.addOutcomeInvitation(user2, 1);
-        userDbClient.addFriend(user, 1);
+        usersClient.addIncomeInvitation(user2, 1);
+        usersClient.addOutcomeInvitation(user2, 1);
+        usersClient.addFriend(user, 1);
     }
 
     @Test
     void springJdbcTest() {
         UserDbClient usersDbClient = new UserDbClient();
         UserJson user = usersDbClient.createUserSpringJdbc(
-                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
+                new UserJson(null, randomUsername(), randomPassword(), RUB, randomName(),
                         randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user);
@@ -114,7 +115,7 @@ public class JdbcTest {
     void createSpendJdbcSpringTest() {
         SpendDaoSpringJdbc spendDaoSpringJdbc = new SpendDaoSpringJdbc();
         SpendDbClient spendDbClient = new SpendDbClient();
-
+        String userName = randomUsername();
         SpendJson spend = spendDbClient.createSpendJdBcSpring(
                 new SpendJson(
                         null,
@@ -122,13 +123,13 @@ public class JdbcTest {
                         new CategoryJson(
                                 null,
                                 randomCategoryName(),
-                                "duck",
+                                userName,
                                 false
                         ),
                         RUB,
                         1000.0,
                         "spend-name-tx",
-                        "duck"
+                        userName
                 )
         );
 

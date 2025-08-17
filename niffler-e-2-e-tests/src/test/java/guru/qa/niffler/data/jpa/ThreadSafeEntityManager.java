@@ -7,9 +7,11 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.metamodel.Metamodel;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 
+@ParametersAreNonnullByDefault
 public class ThreadSafeEntityManager implements EntityManager {
 
   private final ThreadLocal<EntityManager> threadEm = new ThreadLocal<>();

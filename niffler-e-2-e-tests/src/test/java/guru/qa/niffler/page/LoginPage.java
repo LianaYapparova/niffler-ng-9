@@ -2,29 +2,34 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Condition.enabled;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
-public class LoginPage  {
-  private final SelenideElement usernameInput = $("input[name='username']");
-  private final SelenideElement passwordInput = $("input[name='password']");
-  private final SelenideElement submitButton = $("button[type='submit']");
-  private final SelenideElement registerButton = $("[id='register-button']");
+@ParametersAreNonnullByDefault
+public class LoginPage extends BasePage<LoginPage> {
+    private final SelenideElement usernameInput = $("input[name='username']");
+    private final SelenideElement passwordInput = $("input[name='password']");
+    private final SelenideElement submitButton = $("button[type='submit']");
+    private final SelenideElement registerButton = $("[id='register-button']");
 
-  public LoginPage fillLoginPage(String username, String password) {
-    usernameInput.setValue(username);
-    passwordInput.setValue(password);
-    return this;
-  }
+    @Nonnull
+    public LoginPage fillLoginPage(String username, String password) {
+        usernameInput.shouldBe(visible).setValue(username);
+        passwordInput.shouldBe(visible).setValue(password);
+        return this;
+    }
 
-  public MainPage submit() {
-    submitButton.click();
-    return new MainPage();
-  }
+    public MainPage submit() {
+        submitButton.click();
+        return new MainPage();
+    }
 
-  public RegisterPage clickRegisterButton() {
-    registerButton.shouldBe(enabled).click();
-    return page(RegisterPage.class).checkOpen();
-  }
+    public RegisterPage clickRegisterButton() {
+        registerButton.shouldBe(enabled).click();
+        return page(RegisterPage.class).checkOpen();
+    }
 }
