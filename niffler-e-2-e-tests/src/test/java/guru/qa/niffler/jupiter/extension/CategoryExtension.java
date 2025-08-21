@@ -37,7 +37,7 @@ public class CategoryExtension implements
                             CategoryJson category = new CategoryJson(
                                     null,
                                     randomCategoryName(),
-                                    userAnno.username(),
+                                    userAnno.username().isBlank() ? createdUser.username() : userAnno.username(),
                                     categoryAnno.archived()
                             );
 

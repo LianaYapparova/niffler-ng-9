@@ -32,7 +32,7 @@ public class UserExtension implements
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(userAnno -> {
           if ("".equals(userAnno.username())) {
-            UserJson created = usersClient.createUser(   new UserJson(null, randomUsername(), DEFAULT_PASSWORD, RUB, randomName(),
+            UserJson created = usersClient.createUserHibernate(   new UserJson(null, randomUsername(), DEFAULT_PASSWORD, RUB, randomName(),
                     randomSurname(), null, null, null, null, null, null));
             final List<UserJson> incomes = usersClient.addIncomeInvitation(created, userAnno.incomeInvitations());
             final List<UserJson> outcomes = usersClient.addOutcomeInvitation(created, userAnno.outcomeInvitations());

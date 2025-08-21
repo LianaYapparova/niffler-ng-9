@@ -73,20 +73,6 @@ public class JdbcTest {
                         randomSurname(), null, null, null, null, null, null)
         );
         System.out.println(user);
-//
-//        UserJson user1 = userDbClient.createUser(
-//                new UserJson(null, randomUsername(), randomPassword(),  RUB, randomName(),
-//                        randomSurname(), null, null, null, null, null)
-//        );
-//        System.out.println(user1);
-//
-//        FriendshipEntity friendshipEntity = new FriendshipEntity();
-//        friendshipEntity.setAddressee(UserEntity.fromJson(user));
-//        friendshipEntity.setStatus(FriendshipStatus.PENDING);
-//
-//        FriendshipEntity friendshipEntity1 = new FriendshipEntity();
-//        friendshipEntity1.setRequester(UserEntity.fromJson(user1));
-//        friendshipEntity1.setStatus(FriendshipStatus.ACCEPTED);
 
         UserJson user2 = usersClient.createUserHibernate(
                 new UserJson(null, randomUsername(), randomPassword(), RUB, randomName(),
