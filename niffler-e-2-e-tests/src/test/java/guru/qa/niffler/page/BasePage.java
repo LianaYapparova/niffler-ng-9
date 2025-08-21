@@ -7,7 +7,7 @@ import static com.codeborne.selenide.Condition.text;
 
 public abstract class BasePage<T extends BasePage<?>> {
 
-  protected final SelenideElement alert = Selenide.$("");
+  protected final SelenideElement alert = Selenide.$(".MuiAlert-message");
 
   @SuppressWarnings("unchecked")
   public T checkAlert(String text) {

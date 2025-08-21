@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
-public class ArchiveModalForm implements Checked<ArchiveModalForm> {
+public class ArchiveModalForm extends BasePage<ArchiveModalForm>  implements Checked<ArchiveModalForm> {
 
     private final SelenideElement description = $(By.id("alert-dialog-slide-description"));
     private final SelenideElement title = $("[role='dialog'] h2");
