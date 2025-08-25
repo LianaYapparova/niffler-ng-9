@@ -7,7 +7,7 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Selenide.*;
 
-public class ProfilePage {
+public class ProfilePage extends BasePage<ProfilePage> implements Checked<ProfilePage> {
     private final SelenideElement newPictureButton = $("[for='image__input']");
     private final SelenideElement inputUserName = $("input[name='username']");
     private final SelenideElement inputName = $("input[name='name']");
@@ -27,7 +27,17 @@ public class ProfilePage {
     }
 
     public ArchiveModalForm clickUnarchivedButton(String category) {
+        categories.find(Condition.innerText(category)).find("[aria-label='Unarchive category']").click();
+        return page(ArchiveModalForm.class).checkOpen(category);
+    }
+
+    public ArchiveModalForm clickArchivedButton(String category) {
         categories.find(Condition.innerText(category)).find("[aria-label='Archive category']").click();
         return page(ArchiveModalForm.class).checkOpen(category);
+    }
+
+    @Override
+    public ProfilePage checkOpen() {
+        return null;
     }
 }
