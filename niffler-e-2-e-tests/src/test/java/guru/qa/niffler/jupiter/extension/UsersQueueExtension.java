@@ -144,6 +144,4 @@ public class UsersQueueExtension implements
         return users.get(parameterContext.getIndex()).get(AnnotationSupport.findAnnotation(parameterContext.getParameter(), UserType.class)
                 .get().value());
     }
-
-
 }

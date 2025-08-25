@@ -2,19 +2,28 @@ package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import static com.codeborne.selenide.Selenide.$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(BrowserExtension.class)
 public class SpendingTest {
     private static final Config CFG = Config.getInstance();
+
     @User(
             spendings = @Spending(
                     amount = 89990.00,
@@ -35,5 +44,26 @@ public class SpendingTest {
                 .setNewSpendingDescription(newDescription)
                 .save()
                 .checkThatTableContainsSpending(newDescription);
+    }
+
+
+    @User(
+            spendings = @Spending(
+                    amount = 89990.00,
+                    description = "Advanced 9 поток!",
+                    category = "Обучение"
+            )
+    )
+    @ScreenShotTest(value = "img/expected-stat.png")
+    void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .fillLoginPage(user.username(), user.testData().password())
+                .submit();
+
+        BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
+        assertFalse(new ScreenDiffResult(
+                expected,
+                actual
+        ));
     }
 }
