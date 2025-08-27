@@ -13,6 +13,8 @@ logging:
     org.springframework.security.oauth2: INFO
     net.devh.boot.grpc: INFO
     org.springframework.boot.autoconfigure: INFO
+  file:
+      path: ./logs/niffler-gateway
 
 niffler-userdata:
   client: soap

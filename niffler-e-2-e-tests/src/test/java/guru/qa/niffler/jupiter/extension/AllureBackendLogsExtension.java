@@ -14,7 +14,11 @@ import java.util.UUID;
 public class AllureBackendLogsExtension implements SuiteExtension {
     private static final String caseName = "Niffler backend logs";
     private static final Set<String> services = Set.of(
-            "niffler-auth"
+            "niffler-auth",
+            "niffler-currency",
+            "niffler-gateway",
+            "niffler-spend",
+            "niffler-userdata"
     );
 
     @SneakyThrows

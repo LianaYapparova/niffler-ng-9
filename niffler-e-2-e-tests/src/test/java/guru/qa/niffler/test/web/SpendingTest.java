@@ -54,7 +54,7 @@ public class SpendingTest {
                     category = "Обучение"
             )
     )
-    @ScreenShotTest(value = "img/expected-stat.png")
+    @ScreenShotTest(value = "img/expected-stat.png", rewriteExpected = true)
     void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(user.username(), user.testData().password())
