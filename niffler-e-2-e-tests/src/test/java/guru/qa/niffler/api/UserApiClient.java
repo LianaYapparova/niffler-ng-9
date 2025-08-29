@@ -3,6 +3,7 @@ package guru.qa.niffler.api;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.RestClient;
+import io.qameta.allure.Step;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,8 @@ public class UserApiClient extends RestClient {
         this.userApi = create(UserApi.class);
     }
 
+
+    @Step("Create user using API")
     public void registerUser(UserJson userJson) {
         try {
             userApi.requestRegisterForm().execute();

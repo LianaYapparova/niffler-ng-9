@@ -20,11 +20,13 @@ import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
+import io.qameta.allure.Step;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,6 +97,8 @@ public class UserDbClient implements UsersClient {
         );
     }
 
+    @Nonnull
+    @Step("Create user using SQL")
     public UserJson createUser(UserJson user) {
         UserEntity userEntity = UserEntity.fromJson(user);
         return xaTransactionTemplate.execute(() -> {
