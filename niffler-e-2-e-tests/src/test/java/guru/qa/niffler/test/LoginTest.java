@@ -22,7 +22,7 @@ public class LoginTest {
     void loginTest() {
         UserJson newUser = new UserJson(null, randomUsername(), randomPassword(), RUB, null,
                 null, null, null, null, null, null, null);
-        userDbClient.createUser(newUser);
+        userApiClient.registerUser(newUser);
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(newUser.username(), newUser.password())
                 .submit();
