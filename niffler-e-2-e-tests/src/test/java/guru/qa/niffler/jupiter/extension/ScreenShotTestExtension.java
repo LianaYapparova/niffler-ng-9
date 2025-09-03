@@ -25,6 +25,8 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     private static final String TEST_RESOURCES_PATH = System.getProperty("user.dir") +
             "\\niffler-e-2-e-tests\\src\\test\\resources\\";
 
+    public static final String ASSERT_SCREEN_MESSAGE = "Screen comparison failure";
+
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -50,16 +52,19 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
             File outputFile = new File(TEST_RESOURCES_PATH + screenShotTest.value().replace("/", "\\\\"));
             ImageIO.write(getActual(), "png", outputFile);
         }
+        if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
+            ScreenDiff screenDiff = new ScreenDiff("data:image/png;base64,"
+                    + Base64.getEncoder().encodeToString(imageToBytes(getExpected())), "data:image/png;base64,"
+                    + Base64.getEncoder().encodeToString(imageToBytes(getActual())), "data:image/png;base64,"
+                    + Base64.getEncoder().encodeToString(imageToBytes(getDiff())));
 
-        ScreenDiff screenDiff = new ScreenDiff("data:image/png;base64,"
-                + Base64.getEncoder().encodeToString(imageToBytes(getExpected())), "data:image/png;base64,"
-                + Base64.getEncoder().encodeToString(imageToBytes(getActual())), "data:image/png;base64,"
-                + Base64.getEncoder().encodeToString(imageToBytes(getDiff())));
-        Allure.addAttachment(
-                "diff  image",
-                "application/vnd.allure.image.diff",
-                objectMapper.writeValueAsString(screenDiff)
-        );
+            Allure.addAttachment(
+                    "diff  image",
+                    "application/vnd.allure.image.diff",
+                    objectMapper.writeValueAsString(screenDiff)
+            );
+        }
+
         throw throwable;
     }
 

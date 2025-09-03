@@ -1,6 +1,7 @@
 package guru.qa.niffler.test;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
@@ -9,6 +10,7 @@ import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.component.StatComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,16 +56,19 @@ public class SpendingTest {
                     category = "Обучение"
             )
     )
-    @ScreenShotTest(value = "img/expected-stat.png", rewriteExpected = true)
+    @ScreenShotTest(value = "img/expected-stat.png")
     void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .fillLoginPage(user.username(), user.testData().password())
-                .submit();
+                .submit()
+                .getStatComponent();
 
         BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
         assertFalse(new ScreenDiffResult(
                 expected,
                 actual
         ));
+
+        statComponent.checkBubbles(Color.green);
     }
 }
