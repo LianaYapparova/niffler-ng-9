@@ -4,8 +4,8 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
+import guru.qa.niffler.model.allure.Bubble;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 
@@ -59,8 +59,8 @@ public class StatComponent extends BaseComponent<StatComponent> {
 
     @Step("Check that stat bubbles contains colors {expectedColors}")
     @Nonnull
-    public StatComponent checkBubbles(Color... expectedColors) {
-        bubbles.should(color(expectedColors));
+    public StatComponent checkBubbles(Bubble... expectedBubbles) {
+        bubbles.should(color(expectedBubbles));
         return this;
     }
 }

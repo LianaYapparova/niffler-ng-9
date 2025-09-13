@@ -4,6 +4,7 @@ import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementCondition;
 import com.codeborne.selenide.WebElementsCondition;
+import guru.qa.niffler.model.allure.Bubble;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebElement;
@@ -36,47 +37,55 @@ public class StatConditions {
     }
 
     @Nonnull
-    public static WebElementsCondition color(@Nonnull Color... expectedColors) {
+    public static WebElementsCondition color(@Nonnull Bubble... expectedBubbles) {
         return new WebElementsCondition() {
 
-            private final String expectedRgba = Arrays.stream(expectedColors).map(c -> c.rgb).toList().toString();
+            private final String expectedRgba = Arrays.stream(expectedBubbles).map(c -> c.color().rgb).toList().toString();
+            private final String expectedText = Arrays.stream(expectedBubbles).map(c -> c.text()).toList().toString();
+            private String message = "";
 
             @NotNull
             @Override
             public CheckResult check(Driver driver, List<WebElement> elements) {
-                if (ArrayUtils.isEmpty(expectedColors)) {
+                if (ArrayUtils.isEmpty(expectedBubbles)) {
                     throw new IllegalArgumentException("No expected colors given");
                 }
-                if (expectedColors.length != elements.size()) {
-                    final String message = String.format("List size mismatch (expected: %s, actual: %s)", expectedColors.length, elements.size());
+                if (expectedBubbles.length != elements.size()) {
+                    final String message = String.format("List size mismatch (expected: %s, actual: %s)", expectedBubbles.length, elements.size());
                     return rejected(message, elements);
                 }
 
                 boolean passed = true;
                 final List<String> actualRgbaList = new ArrayList<>();
+                final List<String> actualTextList = new ArrayList<>();
                 for (int i = 0; i < elements.size(); i++) {
                     final WebElement elementToCheck = elements.get(i);
-                    final Color colorToCheck = expectedColors[i];
+                    final Color colorToCheck = expectedBubbles[i].color();
+                    final String text = expectedBubbles[i].text();
                     final String rgba = elementToCheck.getCssValue("background-color");
+                    final String textActual = elementToCheck.getText();
                     actualRgbaList.add(rgba);
+                    actualTextList.add(textActual);
                     if (passed) {
-                        passed = colorToCheck.rgb.equals(rgba);
+                        passed = colorToCheck.rgb.equals(rgba) && text.equals(textActual);
                     }
                 }
 
                 if (!passed) {
                     final String actualRgba = actualRgbaList.toString();
-                    final String message = String.format(
-                            "List colors mismatch (expected: %s, actual: %s)", expectedRgba, actualRgba
+                    final String actualText = actualTextList.toString();
+                    message = String.format(
+                            "List colors mismatch (expected: %s, actual: %s) and List texts mismatch (expected: %s, actual: %s)", expectedRgba, actualRgba,
+                            expectedText, actualText
                     );
-                    return rejected(message, actualRgba);
+                    return rejected(message, actualRgba + "   " + actualText);
                 }
                 return accepted();
             }
 
             @Override
             public String toString() {
-                return expectedRgba;
+                return message;
             }
         };
     }
