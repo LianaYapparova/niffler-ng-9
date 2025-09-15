@@ -9,6 +9,7 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.allure.Bubble;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.component.StatComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
@@ -69,6 +70,22 @@ public class SpendingTest {
                 actual
         ));
 
-        statComponent.checkBubbles(Color.green);
+        statComponent.checkBubbles(new Bubble(Color.yellow, "Test"));
+    }
+
+
+    @User(
+            spendings = @Spending(
+                    amount = 89990.00,
+                    description = "Advanced 9 поток!",
+                    category = "Обучение"
+            )
+    )
+    void checkSpendsTest(UserJson user) {
+        StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .fillLoginPage(user.username(), user.testData().password())
+                .submit()
+                .getStatComponent();
+
     }
 }
