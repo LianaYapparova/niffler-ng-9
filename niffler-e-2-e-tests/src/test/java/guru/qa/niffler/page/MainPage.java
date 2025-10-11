@@ -1,6 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.component.StatComponent;
 
 import javax.annotation.Nonnull;
@@ -10,6 +11,9 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage extends ToolBar {
+
+    protected static final Config CFG = Config.getInstance();
+    public static final String URL = CFG.frontUrl() + "main";
     private final SelenideElement spendingTable = $("#spendings");
 
     protected final StatComponent statComponent = new StatComponent();

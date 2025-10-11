@@ -42,6 +42,10 @@ public abstract class RestClient {
         this(baseUrl, followRedirect, converterFactory, HttpLoggingInterceptor.Level.HEADERS, interceptors);
     }
 
+    public RestClient(String baseUrl, boolean followRedirect, Interceptor... interceptors) {
+        this(baseUrl, followRedirect, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.HEADERS, interceptors);
+    }
+
     public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory, HttpLoggingInterceptor.Level level, @Nullable Interceptor... interceptors) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .followRedirects(followRedirect);

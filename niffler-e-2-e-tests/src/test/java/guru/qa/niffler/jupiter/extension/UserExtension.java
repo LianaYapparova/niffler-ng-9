@@ -47,10 +47,7 @@ public class UserExtension implements
                 new ArrayList<>()
             );
 
-            context.getStore(NAMESPACE).put(
-                context.getUniqueId(),
-                created.addTestData(testData)
-            );
+            setUser(created.addTestData(testData));
           }
         });
   }
@@ -65,6 +62,14 @@ public class UserExtension implements
   public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws
       ParameterResolutionException {
     return createdUser();
+  }
+
+  public static void setUser(UserJson testUser) {
+    final ExtensionContext context = TestMethodContextExtension.context();
+    context.getStore(NAMESPACE).put(
+            context.getUniqueId(),
+            testUser
+    );
   }
 
   public static UserJson createdUser() {
